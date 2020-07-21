@@ -1,10 +1,16 @@
 package gr.codehub.crminnovative.service;
 
 import gr.codehub.crminnovative.model.Customer;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+@Service
+@Qualifier("ImplList")
 public class CustomerServiceImpl implements CustomerService {
 
     private static List<Customer>

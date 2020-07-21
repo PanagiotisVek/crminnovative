@@ -6,6 +6,7 @@ import gr.codehub.crminnovative.service.CustomerService;
 import gr.codehub.crminnovative.service.CustomerServiceDbImple;
 import gr.codehub.crminnovative.service.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class CrmController {
 
     @Autowired
+    @Qualifier("ImplDb")
     private CustomerService customerService;
 
 
