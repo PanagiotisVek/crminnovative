@@ -1,5 +1,6 @@
 package gr.codehub.crminnovative.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,11 @@ public class OrdersProduct {
     private int quantity;
     private double price;
 
+    @JsonIgnore
     @ManyToOne
     private Orders orders;
+
+    @JsonIgnore
     @ManyToOne
     private Product product;
 }

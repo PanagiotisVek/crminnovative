@@ -30,6 +30,7 @@ public class Customer {
     @ManyToOne
     private Customer recommender;
 
+    @JsonIgnore
     @OneToMany(mappedBy="recommender")
     private List<Customer> recommended;
 

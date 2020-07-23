@@ -4,8 +4,10 @@ package gr.codehub.crminnovative.controller;
 import gr.codehub.crminnovative.exception.CustomerCreationException;
 import gr.codehub.crminnovative.exception.CustomerNotFoundException;
 import gr.codehub.crminnovative.exception.ProductCreationException;
+import gr.codehub.crminnovative.exception.ProductNotFoundException;
 import gr.codehub.crminnovative.model.Customer;
 import gr.codehub.crminnovative.model.Orders;
+import gr.codehub.crminnovative.model.OrdersProduct;
 import gr.codehub.crminnovative.model.Product;
 import gr.codehub.crminnovative.service.CustomerService;
 import gr.codehub.crminnovative.service.OrdersService;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class CrmController {
@@ -90,4 +93,11 @@ public class CrmController {
 //    public boolean deleteCustomer(@PathVariable int id) {
 //        return customerService.deleteCustomer(id);
 //    }
+
+
+    @PostMapping("buy/{ordersId}/{productsId}")
+    public OrdersProduct createOrdersProduct(@PathVariable UUID ordersId, @PathVariable int productId)
+            throws CustomerNotFoundException, ProductNotFoundException {
+        return ordersService.addProductToOrders(productId, ordersId);
+    }
 }
