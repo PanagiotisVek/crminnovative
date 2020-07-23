@@ -1,5 +1,6 @@
 package gr.codehub.crminnovative.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class Customer {
     @OneToMany(mappedBy="recommender")
     private List<Customer> recommended;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Orders> orders;
 
