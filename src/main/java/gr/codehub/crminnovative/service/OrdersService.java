@@ -1,5 +1,6 @@
 package gr.codehub.crminnovative.service;
 
+import gr.codehub.crminnovative.exception.CannotCrateOrderException;
 import gr.codehub.crminnovative.exception.CustomerNotFoundException;
 import gr.codehub.crminnovative.exception.ProductNotFoundException;
 import gr.codehub.crminnovative.model.Customer;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public interface OrdersService {
     Orders createOrder(int customerId)
-            throws CustomerNotFoundException;
+            throws CustomerNotFoundException, CannotCrateOrderException;
 
     Orders getOrder(UUID OrdersId)
             throws CustomerNotFoundException;

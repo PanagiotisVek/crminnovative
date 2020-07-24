@@ -24,7 +24,7 @@ public class Orders {
     private double totalAmount;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "orders") //lista one to many
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "orders") //lista one to many
     private List<OrdersProduct> ordersProducts;
 
     @ManyToOne //klasi many to one

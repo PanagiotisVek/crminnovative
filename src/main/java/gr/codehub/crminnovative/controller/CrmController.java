@@ -1,10 +1,7 @@
 package gr.codehub.crminnovative.controller;
 
 
-import gr.codehub.crminnovative.exception.CustomerCreationException;
-import gr.codehub.crminnovative.exception.CustomerNotFoundException;
-import gr.codehub.crminnovative.exception.ProductCreationException;
-import gr.codehub.crminnovative.exception.ProductNotFoundException;
+import gr.codehub.crminnovative.exception.*;
 import gr.codehub.crminnovative.model.Customer;
 import gr.codehub.crminnovative.model.Orders;
 import gr.codehub.crminnovative.model.OrdersProduct;
@@ -79,7 +76,7 @@ public class CrmController {
     }
 
     @PostMapping("orders/{customerId}")
-    public Orders createOrders(@PathVariable int customerId) throws CustomerNotFoundException {
+    public Orders createOrders(@PathVariable int customerId) throws CustomerNotFoundException, CannotCrateOrderException {
         return ordersService.createOrder(customerId);
     }
 
@@ -96,8 +93,8 @@ public class CrmController {
 
 
     @PostMapping("buy/{ordersId}/{productsId}")
-    public OrdersProduct createOrdersProduct(@PathVariable UUID ordersId, @PathVariable int productId)
+    public OrdersProduct createOrdersProduct(@PathVariable UUID ordersId, @PathVariable int productsId)
             throws CustomerNotFoundException, ProductNotFoundException {
-        return ordersService.addProductToOrders(productId, ordersId);
+        return ordersService.addProductToOrders(productsId, ordersId);
     }
 }

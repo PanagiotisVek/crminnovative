@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class Customer {
     private String number;
     private String vatNumber;
     private String email;
-    private Date registrationDate;
-    private Date dob;
+    private LocalDate registrationDate;
+    private LocalDate dob;
 
     @ManyToOne
     private Customer recommender;
@@ -37,5 +38,8 @@ public class Customer {
     @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Orders> orders;
+
+    public int getAge(){
+        return  LocalDate.now().getYear() - dob.getYear(); }
 
 }

@@ -1,5 +1,6 @@
 package gr.codehub.crminnovative.service;
 
+import gr.codehub.crminnovative.exception.CannotCrateOrderException;
 import gr.codehub.crminnovative.exception.CustomerNotFoundException;
 import gr.codehub.crminnovative.exception.ProductNotFoundException;
 import gr.codehub.crminnovative.model.Customer;
@@ -13,7 +14,9 @@ import gr.codehub.crminnovative.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,15 +37,19 @@ public class OrderSeviceImpl implements OrdersService {
 
     @Override
     public Orders createOrder(int customerId)
-            throws CustomerNotFoundException{
+            throws CustomerNotFoundException, CannotCrateOrderException {
         Orders orders =  new Orders();
         Customer customerFromDb =
             customerRepository
                     .findById(customerId)
                     .orElseThrow(() -> new CustomerNotFoundException("Cannot Find Customer"));
 
-        orders.setCustomer(customerFromDb);
+        if(customerFromDb.getDob() ==null
+                || customerFromDb.getAge()<18)
+            throw new CannotCrateOrderException("Customer too young or no dob data");
 
+        orders.setCustomer(customerFromDb);
+        orders.setOrdersDate(new Date());
         return ordersRepository.save(orders);
     }
 
@@ -54,22 +61,35 @@ public class OrderSeviceImpl implements OrdersService {
     }
 
     @Override
-    public OrdersProduct addProductToOrders(int productId, UUID OrdersId) throws ProductNotFoundException, CustomerNotFoundException {
-
-        Product product = productRepository
-                .findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Cannot find Product"));
-
-        Orders orders = ordersRepository
-                .findById(OrdersId)
-                .orElseThrow(() -> new CustomerNotFoundException("Cannot Find Customer"));
-
-        OrdersProduct ordersProduct = new OrdersProduct();
-        ordersProduct.setProduct(product);
-        ordersProduct.setOrders(orders);
-
-        return ordersProductRepository.save(ordersProduct);
-
+    public OrdersProduct addProductToOrders(int productId, UUID OrdersId)
+            throws ProductNotFoundException, CustomerNotFoundException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new
+                        ProductNotFoundException("Cannot find product"));
+        Orders orders = ordersRepository.findById(OrdersId).orElseThrow(() -> new
+                CustomerNotFoundException("Cannot find Customer"));
+        Optional<OrdersProduct> ordersProductOptional=
+                ordersProductRepository.findAll()
+                        .stream()
+                        .filter( op-> op.getOrders().getId().equals(OrdersId) &&
+                                op.getProduct().getId()==productId)
+                        .findFirst();
+        OrdersProduct orderProduct;
+        if (ordersProductOptional.isPresent()) {
+            orderProduct = ordersProductOptional.get();
+            orderProduct.setQuantity(  orderProduct.getQuantity()+1 );
+        }
+        else {
+            orderProduct = new OrdersProduct();
+            orderProduct.setQuantity(1);
+            orderProduct.setPrice(product.getPrice());
+        }
+        Product productInOrder = orderProduct.getProduct();
+        productInOrder.setInventoryQantity(
+                productInOrder.getInventoryQantity()-1 );
+        productRepository.save(productInOrder);
+        ordersProductRepository.save(orderProduct);
+        return orderProduct;
     }
 
     @Override
